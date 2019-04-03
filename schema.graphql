@@ -1,3 +1,7 @@
+type Name @entity {
+  id: ID!
+}
+
 type Domain @entity {
   id: ID!
   labelhash: Bytes
@@ -6,6 +10,7 @@ type Domain @entity {
   subdomainCount: Int!
   owner: Account!
   resolver: Bytes
+  name: Name
   ttl: Int
 }
 

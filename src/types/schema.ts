@@ -9,6 +9,37 @@ import {
   BigInt
 } from "@graphprotocol/graph-ts";
 
+export class Name extends Entity {
+  constructor(id: string) {
+    this.entries = new Array(0);
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save Name entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save Name entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("Name", id.toString(), this);
+  }
+
+  static load(id: string): Name | null {
+    return store.get("Name", id) as Name | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+}
+
 export class Domain extends Entity {
   constructor(id: string) {
     this.entries = new Array(0);
@@ -114,6 +145,23 @@ export class Domain extends Entity {
       this.unset("resolver");
     } else {
       this.set("resolver", Value.fromBytes(value as Bytes));
+    }
+  }
+
+  get name(): string | null {
+    let value = this.get("name");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set name(value: string | null) {
+    if (value === null) {
+      this.unset("name");
+    } else {
+      this.set("name", Value.fromString(value as string));
     }
   }
 
